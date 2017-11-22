@@ -18,5 +18,5 @@ SETUP
 
 #### Adjust the Sync Freqency and Set the date for the oldest Logs you would like to upload.
 
-#### Hit Upload Synci and check the box for Notify On Systray to have the program hide on Systray and notify from there.
+#### Hit Upload Sync and check the box for Notify On Systray to have the program hide on Systray and notify from there.
 
