@@ -1,12 +1,149 @@
-﻿<Window x:Class="GW2RaidarUploader.MainWindow"
+﻿<Controls:MetroWindow x:Class="GW2RaidarUploader.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:GW2RaidarUploader"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
-    <Grid>
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:GW2RaidarUploader="clr-namespace:GW2RaidarUploader"
+        xmlns:System="clr-namespace:System;assembly=mscorlib"
+        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro" WindowTitleBrush="Black" Height="400" Width="700" FontWeight="Bold" ResizeMode="NoResize" Title="GW2 RAIDAR UPLOADER" FontSize="14" TitleCaps="False" SaveWindowPosition="True"
+                      IsMaxRestoreButtonEnabled="False" NonActiveWindowTitleBrush="{x:Null}" NonActiveBorderBrush="#FFA4DEFF" 
+                      NonActiveGlowBrush="#FFA4DEFF" BorderThickness="0" ShowMaxRestoreButton="False" Foreground="#FFEEEEEE" 
+                      OverlayBrush="Black" GlowBrush="Black" ToolTip="GW2 Raidar Uploader" 
+                      Icon="pack://application:,,,/GW2RaidarUploader;component/GW2RaidarUploaderIcon.ico"
+                      OverrideDefaultWindowCommandsBrush="#FFEEEEEE" WindowTransitionsEnabled="False" IsCloseButtonEnabled="False" IsMinButtonEnabled="False" ShowCloseButton="False" ShowMinButton="False" ShowDialogsOverTitleBar="False" TitlebarHeight="25" StateChanged="MetroWindow_StateChanged" Closing="MetroWindow_Closing" >
+    <Controls:MetroWindow.Background>
+        <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+            <GradientStop Color="Black"/>
+            <GradientStop Color="#FF002F34" Offset="1"/>
+        </LinearGradientBrush>
         
+        
+    </Controls:MetroWindow.Background>
+
+    <Controls:MetroWindow.RightWindowCommands>
+        <Controls:WindowCommands>
+            <Button x:Name="SyncNowButton" Content="Sync Now" ToolTip="Sync immediately." Click="SyncNowButton_Click" Foreground="{StaticResource MainTextColor}" FontSize="10" >
+            
+            </Button>
+            <Button x:Name="MinimizeButton" ToolTip="Minimize to System Tray" Visibility="Visible" Click="MinimizeButton_Click">
+                <StackPanel Orientation="Horizontal">
+                    <Rectangle Width="14" Height="3">
+                        <Rectangle.Fill>
+                            <VisualBrush Visual="{StaticResource minimize_window}"/>
+                        </Rectangle.Fill>
+                    </Rectangle>
+                </StackPanel>
+            </Button>
+            
+            <Button x:Name="CloseButton" ToolTip="Close Program" Visibility="Visible" Click="CloseButton_Click">
+                <StackPanel Orientation="Horizontal">
+                    <Rectangle Width="14" Height="14">
+                        <Rectangle.Fill>
+                            <VisualBrush Visual="{StaticResource appbar_close}"/>
+                        </Rectangle.Fill>
+                    </Rectangle>
+                </StackPanel>
+            </Button>
+
+        </Controls:WindowCommands>
+    </Controls:MetroWindow.RightWindowCommands>
+    <Window.Resources>
+
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+
+        </Grid.ColumnDefinitions>
+
+        <Button x:Name="UploadButton" Content="BEGIN SYNC"  HorizontalAlignment="Left" Margin="394,128,0,0" VerticalAlignment="Top" Width="140" Click="UploadButton_Click" FontWeight="Bold" FontSize="16" Height="50" Foreground="#FFEEEEEE" BorderBrush="#FF3AB7AC" TabIndex="6">
+            <Button.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FF138AA4" Offset="0"/>
+                    <GradientStop Color="#FF004034" Offset="1"/>
+                </LinearGradientBrush>
+            </Button.Background>
+        </Button>
+        <Button x:Name="StopUploadButton" Content="STOP SYNC" HorizontalAlignment="Left" Margin="538,128,0,0" VerticalAlignment="Top" Width="140" Click="StopUploadButton_Click" FontWeight="Bold" FontSize="16" Height="50" Foreground="#FFEEEEEE" IsEnabled="False" TabIndex="7">
+            <Button.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FF138AA4" Offset="0"/>
+                    <GradientStop Color="#FF002F34" Offset="1"/>
+                </LinearGradientBrush>
+            </Button.Background>
+        </Button>
+        <StackPanel Orientation="Vertical" Margin="0,0,0,0">
+            <Grid x:Name="RaidarLogsPath" Margin="5,0,0,0" Height="32">
+                <Label x:Name="RaidarLogsPathLabel" Grid.Column="0" Content="ArcDPS Logs Path" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="#FFEEEEEE" ToolTip="Path to ArcDPS Logs Directory" FontFamily="Verdana"/>
+                <TextBox x:Name="RaidarLogsPathTB" GW2RaidarUploader:OpenFileDialogEx.Filter="Folder" HorizontalAlignment="Left" Margin="153,4,0,0"  TextWrapping="NoWrap" VerticalAlignment="Center" Width="400" FontWeight="Normal" Foreground="#FFEEEEEE" BorderBrush="#89FFFFFF" Controls:TextBoxHelper.Watermark="Documents\Guild Wars 2\addons\arcdps\arcdps.logs" Background="{x:Null}" BorderThickness="0,0,0,1" TabIndex="1"></TextBox>
+                <Button x:Name="RaidarLogsPathButton"  Content="BROWSE" Margin="564,4,0,0" HorizontalAlignment="Left"  VerticalAlignment="Center" Width="102" FontWeight="Bold" BorderBrush="#FF008997" Foreground="#FFEEEEEE" FontFamily="Verdana" FontSize="12">
+                    <Button.Background>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Color="#FF138AA4" Offset="0"/>
+                            <GradientStop Color="#FF004034" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Button.Background>
+                </Button>
+            </Grid>
+            <Grid x:Name="DPSLogsUploadDateStart" Margin="5,0,0,0" Height="32">
+                <Label x:Name="DPSLogsUploadDateStartLabel" Grid.Column="0" Content="Upload Start Date" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="#FFEEEEEE" ToolTip="Path to ArcDPS Logs Directory" FontFamily="Verdana"/>
+                <DatePicker x:Name="DPSLogsUploadDateStartTB" HorizontalAlignment="Left" Margin="153,4,0,0" VerticalAlignment="Center" Width="230" FontWeight="Normal" Foreground="#FFEEEEEE" FontFamily="Verdana" BorderBrush="#89FFFFFF" Background="{x:Null}" BorderThickness="0,0,0,1" TabIndex="2"/>
+
+            </Grid>
+            <Grid x:Name="raidarUsername" Margin="5,0,0,0" Height="32">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="13*"/>
+                    <ColumnDefinition Width="86*"/>
+                    
+                </Grid.ColumnDefinitions>
+                <Label x:Name="raidarUsernameLabel" Grid.Column="0" Content="Raidar Username" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="#FFEEEEEE" ToolTip="GW2Raidar Username" FontFamily="Verdana" Grid.ColumnSpan="2"/>
+                <StackPanel Orientation="Horizontal" Grid.Column="1">
+                <TextBox x:Name="raidarUsernameTB" HorizontalAlignment="Left" Margin="62,-1,0,-1"  Text=""  TextWrapping="Wrap" VerticalAlignment="Center" Width="230" FontWeight="Normal" Controls:TextBoxHelper.Watermark="Username" Foreground="#FFEEEEEE" FontFamily="Verdana" Grid.Column="1" BorderBrush="#89FFFFFF" Background="{x:Null}" BorderThickness="0,0,0,1" TabIndex="3"/>
+                    <CheckBox x:Name="SystrayCB" Margin="15,0,0,0" Background="{x:Null}" BorderBrush="White" Content="MINIMIZE TO SYSTRAY" ToolTip="Will notify on systray upon new upload attempt." FontFamily="Verdana" Foreground="#FFEEEEEE" Checked="SystrayCB_Checked" Unchecked="SystrayCB_Unchecked"/>
+                </StackPanel>
+            </Grid>
+
+            <Grid x:Name="raidarPassword" Margin="5,0,0,0" Height="32">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="32*"/>
+                    <ColumnDefinition Width="199*"/>
+                </Grid.ColumnDefinitions>
+                <Label x:Name="raidarPasswordLabel" Grid.Column="0" Content="Raidar Password" Margin="0,-1,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="#FFEEEEEE" ToolTip="GW2Raidar Password" FontFamily="Verdana" Grid.ColumnSpan="2"/>
+                <StackPanel Orientation="Horizontal" Grid.Column="1">
+                <PasswordBox x:Name="raidarPasswordTB" HorizontalAlignment="Left" Margin="57,-2,0,4"  VerticalAlignment="Center" Width="230" FontWeight="Normal" Controls:TextBoxHelper.Watermark="Password" Foreground="#FFEEEEEE" FontFamily="Verdana" Grid.Column="1" BorderBrush="#89FFFFFF" Background="{x:Null}" BorderThickness="0,0,0,1" TabIndex="4" />
+                    <CheckBox x:Name="LoadOnStartupCB" Visibility="Hidden" Margin="15,0,0,0" Background="{x:Null}" BorderBrush="White" Content="LOAD ON STARTUP" ToolTip="Will open program on startup." FontFamily="Verdana" Foreground="#FFEEEEEE"/>
+                </StackPanel>
+            </Grid>
+            
+            <Grid x:Name="raidarSyncRate" Margin="5,0,0,0" Height="30">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="32*"/>
+                    <ColumnDefinition Width="199*"/>
+                </Grid.ColumnDefinitions>
+                <Label x:Name="raidarSyncRateLabel" Grid.Column="0" Content="Raidar Sync Rate" Margin="0,-1,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="#FFEEEEEE" ToolTip="GW2Raidar Password" FontFamily="Verdana" Grid.ColumnSpan="2"/>
+                <TextBox x:Name="raidarSyncRateTB" HorizontalAlignment="Left" Margin="57,-2,0,4" VerticalAlignment="Center" Width="230" FontWeight="Normal" Controls:TextBoxHelper.Watermark="In Minutes (Default 5mins)" Foreground="AliceBlue" FontFamily="Verdana" Grid.Column="1" BorderBrush="#89FFFFFF" BorderThickness="0,0,0,1" Background="{x:Null}" ToolTip="How often it will check for new Raid Logs in minutes." TabIndex="5" />
+            </Grid>
+            <Controls:MetroProgressBar x:Name="ProgressBarControl" Height="23" Width="379" HorizontalAlignment="Left" VerticalAlignment="Bottom" Maximum="100" Background="#EE494949" Value="0" Margin="10,0,0,0">
+                <Controls:MetroProgressBar.Foreground>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="#FF739E9A" Offset="0"/>
+                        <GradientStop Color="#FF005B4A" Offset="1"/>
+                    </LinearGradientBrush>
+                </Controls:MetroProgressBar.Foreground>
+            </Controls:MetroProgressBar>
+
+        </StackPanel>
+
+
+        <TextBox
+      AcceptsReturn="True"
+      Margin="10,183,10,10"
+      Name="statusText"
+      Text=""
+      TextWrapping="Wrap"
+      VerticalScrollBarVisibility="Visible" Background="#88000000" BorderBrush="#FFEEEEEE" Foreground="#FFEEEEEE" BorderThickness="1,1,1,1" TextOptions.TextFormattingMode="Display" SelectionBrush="#FFEEEEEE" CaretBrush="White" Controls:ControlsHelper.FocusBorderBrush="White" FontSize="13" IsReadOnly="True" IsUndoEnabled="False"/>
+
+
+        <!-- Button x:Name="InstallerUpdate" Content="Upload Installer" HorizontalAlignment="Left" Margin="321,200,0,0" VerticalAlignment="Top" Width="110" Click="InstallerUpdate_Click"/-->
+
+
     </Grid>
-</Window>
+</Controls:MetroWindow>
