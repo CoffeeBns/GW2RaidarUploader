@@ -174,7 +174,7 @@ namespace GW2RaidarUploader
             doneUploading = false;
             autoSyncEnabled = true;
            
-            ClientOperator.mainWindow.AddMessage("Attempting Raidar Files Upload.");
+           
             ThreadStart threadStart = delegate
             {
                 AttemptUpload();
@@ -361,7 +361,11 @@ namespace GW2RaidarUploader
                 Config.Instance.logsDictionary = logsDictionary;
                 Config.Save();
 
-                AddMessage("All log files uploaded in " + (DateTime.Now - syncStarted).TotalSeconds + " seconds.");
+                if (totalFilesToUpload > 0)
+                {
+                    AddMessage("All log files uploaded in " + (DateTime.Now - syncStarted).TotalSeconds + " seconds.");
+                }
+
                 CompletionMessage();
             }
             catch(Exception ex)
