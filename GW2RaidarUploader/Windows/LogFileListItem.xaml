@@ -1,0 +1,48 @@
+<UserControl x:Class="GW2RaidarUploader.Windows.LogFileListItem"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:GW2RaidarUploader"
+             mc:Ignorable="d" 
+             d:DesignHeight="400" d:DesignWidth="600" Height="25" MinWidth="600" ContextMenuOpening="UserControl_ContextMenuOpening" MouseRightButtonDown="UserControl_MouseRightButtonDown" >
+    <UserControl.ContextMenu>
+        <ContextMenu>
+            <MenuItem x:Name="BtnSelectAll" Header="SELECT ALL" Click="BtnSelectAll_Click" Style="{DynamicResource FilterMenuItemStyle}" />
+            <MenuItem x:Name="BtnUpload" Header="UPLOAD SELECTED" Click="BtnUpload_Click" Style="{DynamicResource FilterMenuItemStyle}" />
+            <MenuItem x:Name="BtnUnselectAll" Header="UNSELECT ALL" Click="BtnUnselectAll_Click" Style="{DynamicResource FilterMenuItemStyle}" />
+            <MenuItem x:Name="BtnDelete" Header="DELETE SELECTED" Click="BtnDelete_Click" Style="{DynamicResource FilterMenuItemStyle}"/>
+        </ContextMenu>
+    </UserControl.ContextMenu>
+    <Grid Height="25" MinWidth="600">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="180"/>
+            <ColumnDefinition Width="120"/>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="auto"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Orientation="Horizontal" Grid.Column="0">
+        <Rectangle Fill="{Binding Icon}" Height="25" Width="25" Margin="0,0,2,0"/>
+        <TextBlock x:Name="encounterTB" Width="auto"  VerticalAlignment="Center" HorizontalAlignment="Left"
+                                 Text="{Binding encounter}"                     
+                                 TextAlignment="Left" FontSize="{Binding FontSize}" FontStyle="Normal" Grid.Column="0" Panel.ZIndex="5" FontFamily="Verdana" />
+        </StackPanel>
+        <TextBlock x:Name="dateTB" Width="auto" VerticalAlignment="Center" HorizontalAlignment="Left"
+                                 Text="{Binding DateStringShort}"                     
+                                 TextAlignment="Right" FontSize="{Binding FontSize}" FontStyle="Normal" Grid.Column="1" Panel.ZIndex="5" FontFamily="Verdana" />
+      
+        <TextBlock x:Name="uploadStatusTB" Width="auto" VerticalAlignment="Center" HorizontalAlignment="Right"
+                                 Text="{Binding UploadStatusString}"                     
+                                 TextAlignment="Right" FontSize="{Binding FontSize}" FontStyle="Normal" Grid.Column="2" Margin="0,0,0,0" Panel.ZIndex="5" FontFamily="Verdana" />
+        <TextBlock x:Name="tagTB" Visibility="Collapsed" Width="auto" VerticalAlignment="Center" HorizontalAlignment="Left"
+                                 Text="{Binding tag}"                     
+                                 TextAlignment="Right" FontSize="{Binding FontSize}" FontStyle="Normal" Grid.Column="3" Panel.ZIndex="5" FontFamily="Verdana" />
+        <TextBlock x:Name="filePathTB" Margin="5,0,0,0" Width="auto" VerticalAlignment="Center" HorizontalAlignment="Right"
+                                 Text="{Binding FileName}"                     
+                                 TextAlignment="Right" FontSize="{Binding FontSize}" FontStyle="Normal" Grid.Column="3" Panel.ZIndex="5" FontFamily="Verdana" />
+
+
+
+    </Grid>
+</UserControl>

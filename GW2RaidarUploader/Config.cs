@@ -69,6 +69,35 @@ namespace GW2RaidarUploader
         [DefaultValue(false)]
         public bool notifyOnSystray = false;
 
+        [ProtoMember(13)]
+        [DefaultValue(null)]
+        public Dictionary<string, LogFile> logFilesDictionary = new Dictionary<string, LogFile>();
+
+        [ProtoMember(14)]
+        [DefaultValue(true)]
+        public bool onlyUploadFinalEncounters = true;
+
+        [ProtoMember(15)]
+        [DefaultValue(25)]
+        public int logFileListItemSize = 25;
+
+        [ProtoMember(16)]
+        [DefaultValue(11)]
+        public int logFileListItemFontSize = 11;
+
+        [ProtoMember(17)]
+        [DefaultValue(false)]
+        public bool notificationSounds = false;
+
+        [ProtoMember(18)]
+        [DefaultValue(true)]
+        public bool randomizedBackgrounds = true;
+
+        [ProtoMember(19)]
+        [DefaultValue(false)]
+        public bool minimizeToSystray = false;
+
+
         #region Config Controls
 
 
@@ -200,6 +229,7 @@ namespace GW2RaidarUploader
             }
             catch (Exception e)
             {
+                ClientOperator.mainWindow.AddMessage("Failed to save due to " + e);
             }
 
         }
