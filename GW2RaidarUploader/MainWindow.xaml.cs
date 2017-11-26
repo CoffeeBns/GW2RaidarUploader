@@ -198,7 +198,7 @@ namespace GW2RaidarUploader
         public string GetMainWindowBGColor
         {
             get
-            {       
+            {
                 return "#040813";
             }
         }
@@ -223,7 +223,7 @@ namespace GW2RaidarUploader
 
         public void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            
+
 
             MainWindowBGColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString(GetMainWindowBGColor));
 
@@ -241,9 +241,9 @@ namespace GW2RaidarUploader
             Config.Load();
             LoadConfig();
             LoadUI();
- 
 
-     
+
+
 
             systrayIcon = new NotifyIcon
             {
@@ -273,7 +273,7 @@ namespace GW2RaidarUploader
                 UploadButton_Click(this, null);
             }
 
-            
+
 
             EnableDevFunctions();
 
@@ -303,10 +303,10 @@ namespace GW2RaidarUploader
             if (Config.Instance.autoSyncEnabled)
             {
                 DateTime nextUpdateTick = lastUpdateTick.AddMinutes(syncRate);
-                if(DateTime.Now > nextUpdateTick)
+                if (DateTime.Now > nextUpdateTick)
                 {
-                    if(doneUploading)
-                    UploadButton_Click(this, null);
+                    if (doneUploading)
+                        UploadButton_Click(this, null);
                 }
 
                 //AddMessage("Next update is in " + (nextUpdateTick - DateTime.Now).TotalSeconds + " seconds.");
@@ -324,9 +324,9 @@ namespace GW2RaidarUploader
                 dateToUploadFrom = c.dateToUploadFrom;
                 logFilesDictionary = c.logFilesDictionary;
                 logsDictionary = c.logsDictionary;
-              
+
                 //if (dateToUploadFrom == DateTime.MinValue)
-                   // dateToUploadFrom = DateTime.Now;
+                // dateToUploadFrom = DateTime.Now;
 
                 syncRate = c.syncRate;
 
@@ -356,7 +356,7 @@ namespace GW2RaidarUploader
             try
             {
 
-               
+
                 RaidarLogsPathTB.Text = raidarLogsPath;
                 raidarUsernameTB.Text = username;
                 raidarPasswordTB.Password = password;
@@ -368,16 +368,16 @@ namespace GW2RaidarUploader
             catch (Exception e)
             {
                 AddMessage("Failed to load UI due to " + e);
-                
+
             }
         }
-        
+
         public void LoadLogsList()
         {
-            if(logFilesDictionary.Count > 0)
+            if (logFilesDictionary.Count > 0)
             {
                 logFilesCollection = new ObservableCollection<LogFile>(logFilesDictionary.Values);
-              
+
 
             }
 
@@ -389,20 +389,20 @@ namespace GW2RaidarUploader
         private void UploadButton_Click(object sender, RoutedEventArgs e)
         {
 
-        
-                _completedUploads = 0;
 
-                doneUploading = false;
-                Config.Instance.autoSyncEnabled = true;
-                Config.Save();
+            _completedUploads = 0;
 
-                ClientOperator.mainWindow.AddMessage("Attempting Raidar Files Upload.");
-                ThreadStart threadStart = delegate
-                {
-                    AttemptUpload();
-                };
+            doneUploading = false;
+            Config.Instance.autoSyncEnabled = true;
+            Config.Save();
 
-                new Thread(threadStart).Start();
+            ClientOperator.mainWindow.AddMessage("Attempting Raidar Files Upload.");
+            ThreadStart threadStart = delegate
+            {
+                AttemptUpload();
+            };
+
+            new Thread(threadStart).Start();
 
         }
 
@@ -490,7 +490,7 @@ namespace GW2RaidarUploader
                     Config.Save();
 
                     LoadConfig();
-      
+
                 }
 
             }));
@@ -518,13 +518,25 @@ namespace GW2RaidarUploader
                 if (filesToUpload == null)
                 {
                     AddMessage("Failed to find any files to upload at this time.");
+
+                    this.Dispatcher.Invoke((Action)(() =>
+                    {
+                        UploadButton.IsEnabled = false;
+                        StopUploadButton.IsEnabled = true;
+                        ProgressBarControl.Maximum = 1;
+                        ProgressBarControl.Value = 0;
+                        Config.Instance.autoSyncEnabled = true;
+                        Config.Save();
+
+                    }));
+
                     return;
                 }
 
                 UploadAllFiles(filesToUpload);
-              
+
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 AddMessage("Failed to upload log files due to " + ex);
             }
@@ -538,7 +550,7 @@ namespace GW2RaidarUploader
                 string[] allFiles = Directory.GetFiles(raidarLogsPath, "*.*", SearchOption.AllDirectories);
 
                 List<string> filesToUpload = new List<string>();
-               
+
                 List<LogFile> potentialLogFiles = new List<LogFile>();
 
                 DateTime syncStarted = DateTime.Now;
@@ -573,7 +585,7 @@ namespace GW2RaidarUploader
                     if (logFile.encounter.Length < 3)
                         logFile.encounter = RaidEncounters.FirstOrDefault(w => allFiles[i].Contains(w));
 
-                   
+
 
                     //If uploading all encounters within date range, regardless of if it was the kill and/or last attempt on the boss.
                     if (!Config.Instance.onlyUploadFinalEncounters)
@@ -602,12 +614,12 @@ namespace GW2RaidarUploader
                     {
                         LogFile lf = potentialLogFiles[i];
 
-                        if(devModeEnabled)
-                        AddMessage("e: " + lf.encounter + " d: " + lf.creationDate);
+                        if (devModeEnabled)
+                            AddMessage("e: " + lf.encounter + " d: " + lf.creationDate);
                     }
 
-                    if(devModeEnabled)
-                    AddMessage("-----------");
+                    if (devModeEnabled)
+                        AddMessage("-----------");
 
                     for (int i = 0; i < potentialLogFiles.Count; i++)
                     {
@@ -622,28 +634,28 @@ namespace GW2RaidarUploader
                         {
                             var futureEncounters = potentialLogFiles.Where(d => d.encounter == lf.encounter && Math.Abs(ClientOperator.FastFloor((float)(d.creationDate - lf.creationDate).TotalHours)) < 6);
 
-                            if(devModeEnabled)
-                            AddMessage(futureEncounters.Count<LogFile>() + " potential encounters in range of this one.");
+                            if (devModeEnabled)
+                                AddMessage(futureEncounters.Count<LogFile>() + " potential encounters in range of this one.");
 
                             foreach (LogFile otherLF in futureEncounters)
                             {
                                 //More encounters on this boss today, move to the next potential log file.
                                 if (otherLF.encounter == lf.encounter && otherLF.creationDate > lf.creationDate)
                                 {
-                                    if(devModeEnabled)
-                                    AddMessage(lf.encounter + " at " + lf.creationDate + " skipped due to " + otherLF.encounter + " at " + otherLF.creationDate);
+                                    if (devModeEnabled)
+                                        AddMessage(lf.encounter + " at " + lf.creationDate + " skipped due to " + otherLF.encounter + " at " + otherLF.creationDate);
                                     eligibleForUpload = false;
                                     break;
                                 }
                             }
                         }
 
-                        if (eligibleForUpload && lf.creationDate > dateToUploadFrom)                      
+                        if (eligibleForUpload && lf.creationDate > dateToUploadFrom)
                         {
                             filesToUpload.Add(lf.filePath);
 
-                            if(devModeEnabled)
-                            AddMessage(lf.encounter + " at " + lf.creationDate + " will be uploaded from " + lf.filePath);
+                            if (devModeEnabled)
+                                AddMessage(lf.encounter + " at " + lf.creationDate + " will be uploaded from " + lf.filePath);
                         }
                     }
 
@@ -743,23 +755,23 @@ namespace GW2RaidarUploader
                 req.AddFile("file", file);
                 req.AddParameter("username", username);
                 req.AddParameter("password", password);
-                
+
                 //Comment this out to test in a way that gives false positive uploads.
                 req.Method = Method.POST;
 
                 IRestResponse response = client.Execute(req);
 
-                    if (response.ResponseStatus == ResponseStatus.Completed)
-                    {
-                        AddMessage("Successfully uploaded " + file);
-                        ShowNotificationMessage("Log Uploaded Successfully.", file + " has been uploaded.");
-                        AddMessage(response.Content);
-                    }
-                    else
-                    {
-                        AddMessage("Failed to upload " + file);
-                        return false;
-                    }
+                if (response.ResponseStatus == ResponseStatus.Completed)
+                {
+                    AddMessage("Successfully uploaded " + file);
+                    ShowNotificationMessage("Log Uploaded Successfully.", file + " has been uploaded.");
+                    AddMessage(response.Content);
+                }
+                else
+                {
+                    AddMessage("Failed to upload " + file);
+                    return false;
+                }
 
                 return true;
             }
@@ -776,10 +788,10 @@ namespace GW2RaidarUploader
             if (!doneUploading)
             {
                 doneUploading = true;
-     
+
 
                 lastUpdateTick = DateTime.Now;
-         
+
                 this.Dispatcher.Invoke((Action)(() =>
                 {
                     if (!Config.Instance.autoSyncEnabled)
@@ -862,7 +874,7 @@ namespace GW2RaidarUploader
 
         private void StopUploadButton_Click(object sender, RoutedEventArgs e)
         {
-            Config.Instance.autoSyncEnabled = false;   
+            Config.Instance.autoSyncEnabled = false;
             Config.Save();
 
             this.Dispatcher.Invoke((Action)(() =>
@@ -882,22 +894,22 @@ namespace GW2RaidarUploader
 
 
         }
-     
+
         private void SyncNowButton_Click(object sender, RoutedEventArgs e)
         {
-           
-                _completedUploads = 0;
 
-                doneUploading = false;
+            _completedUploads = 0;
 
-                ClientOperator.mainWindow.AddMessage("Attempting Single Raidar Files Upload.");
-                ThreadStart threadStart = delegate
-                {
-                    AttemptUpload(true);
-                };
+            doneUploading = false;
 
-                new Thread(threadStart).Start();
-          
+            ClientOperator.mainWindow.AddMessage("Attempting Single Raidar Files Upload.");
+            ThreadStart threadStart = delegate
+            {
+                AttemptUpload(true);
+            };
+
+            new Thread(threadStart).Start();
+
         }
 
         private void MinimizeButton_Click(object sender, RoutedEventArgs e)
@@ -938,56 +950,56 @@ namespace GW2RaidarUploader
             }
             catch (Exception ex)
             {
-               AddMessage("[UI]Error activating window: " + ex.ToString());
+                AddMessage("[UI]Error activating window: " + ex.ToString());
             }
         }
 
         public void ShowNotificationMessage(string _title, string _message, int _sound = 3)
         {
 
-                this.Dispatcher.Invoke((Action)(() =>
+            this.Dispatcher.Invoke((Action)(() =>
+            {
+                if (Config.Instance.notifyOnSystray)
                 {
-                    if (Config.Instance.notifyOnSystray)
+                    systrayIcon.BalloonTipTitle = _title;
+                    systrayIcon.BalloonTipText = _message;
+                    systrayIcon.ShowBalloonTip(10000);
+
+                }
+
+                if (Config.Instance.notificationSounds && DateTime.Now > lastNotificationSound.AddSeconds(15))
+                {
+                    if (_sound == 0)
                     {
-                        systrayIcon.BalloonTipTitle = _title;
-                        systrayIcon.BalloonTipText = _message;
-                        systrayIcon.ShowBalloonTip(10000);
-                
+                        var player = new SoundPlayer();
+                        player.Stream = Properties.Resources.notification;
+
+                        player.Play();
+                    }
+                    if (_sound == 1)
+                    {
+                        var player = new SoundPlayer();
+                        player.Stream = Properties.Resources.notification1;
+                        player.Play();
+                    }
+                    else if (_sound == 2)
+                    {
+                        var player = new SoundPlayer();
+                        player.Stream = Properties.Resources.notification2;
+                        player.Play();
+                    }
+                    else if (_sound == 3)
+                    {
+                        var player = new SoundPlayer();
+                        player.Stream = Properties.Resources.notification3;
+                        player.Play();
                     }
 
-                    if (Config.Instance.notificationSounds && DateTime.Now > lastNotificationSound.AddSeconds(15))
-                    {
-                        if (_sound == 0)
-                        {
-                            var player = new SoundPlayer();
-                            player.Stream = Properties.Resources.notification;
-                            
-                            player.Play();
-                        }
-                        if (_sound == 1)
-                        {
-                            var player = new SoundPlayer();
-                            player.Stream = Properties.Resources.notification1;
-                            player.Play();
-                        }
-                        else if (_sound == 2)
-                        {
-                            var player = new SoundPlayer();
-                            player.Stream = Properties.Resources.notification2;
-                            player.Play();
-                        }
-                        else if (_sound == 3)
-                        {
-                            var player = new SoundPlayer();
-                            player.Stream = Properties.Resources.notification3;
-                            player.Play();
-                        }
 
+                    lastNotificationSound = DateTime.Now;
+                }
+            }));
 
-                        lastNotificationSound = DateTime.Now;
-                    }
-                }));
-            
         }
 
 
@@ -1005,13 +1017,13 @@ namespace GW2RaidarUploader
 
         //For Testing and eventual for manually viewing all logs and selecting individual ones to upload.
         private void LocalSyncButton_Click(object sender, RoutedEventArgs e)
-        {    
-   
+        {
+
             GetFilesToUpload();
 
             LoadConfig();
 
-           
+
         }
 
         private void WipeDictionariesButton_Click(object sender, RoutedEventArgs e)
@@ -1044,14 +1056,14 @@ namespace GW2RaidarUploader
                     TabsWallpaper = new BitmapImage(new Uri(OakTabsWPUri));
                     GridWallpaper = new BitmapImage(new Uri(OakGridWPUri));
                 }
-                else if(MainTabControl.SelectedItem == ViewLogsTabItem)
+                else if (MainTabControl.SelectedItem == ViewLogsTabItem)
                 {
                     MainWindowBGColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#040813"));
                     TitleWallpaper = new BitmapImage(new Uri(InnWPUri));
                     TabsWallpaper = new BitmapImage(new Uri(InnTabsWPUri));
                     GridWallpaper = new BitmapImage(new Uri(InnGridWPUri));
                 }
-                else if(MainTabControl.SelectedItem == OptionsTabItem)
+                else if (MainTabControl.SelectedItem == OptionsTabItem)
                 {
                     MainWindowBGColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#070C1A"));
                     TitleWallpaper = new ImageSourceConverter().ConvertFromString(ShipWPUri) as ImageSource;
@@ -1073,7 +1085,7 @@ namespace GW2RaidarUploader
 
         private void Randomize_Wallpaper()
         {
-      
+
             int _wallpaper = ClientOperator.RandomRangeNotRepeating(1, 4, _lastWallpaper);
 
             _lastWallpaper = _wallpaper;
@@ -1107,14 +1119,14 @@ namespace GW2RaidarUploader
                 GridWallpaper = new ImageSourceConverter().ConvertFromString(SpoutGridWPUri) as ImageSource;
             }
 
-           
-    }
+
+        }
 
         private void PseudoTitlebar_MouseDown(object sender, MouseButtonEventArgs e)
         {
-          
+
             if (e.ChangedButton == MouseButton.Left)
-            {            
+            {
                 this.DragMove();
             }
         }
@@ -1134,8 +1146,8 @@ namespace GW2RaidarUploader
 
         private void PseudoTitlebar_MouseUp(object sender, MouseButtonEventArgs e)
         {
-           
-            if((DateTime.Now - lastMouseUpEvent).TotalMilliseconds < 250)
+
+            if ((DateTime.Now - lastMouseUpEvent).TotalMilliseconds < 250)
             {
                 ToggleWindowMaximize();
             }
@@ -1153,7 +1165,7 @@ namespace GW2RaidarUploader
             ShowNotificationMessage("Test", "testing sound.");
         }
 
-      
+
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
         {
             OptionsUpdate();
@@ -1182,11 +1194,11 @@ namespace GW2RaidarUploader
 
         public void DeleteFile(LogFile lf)
         {
-            if(logFilesDictionary.ContainsKey(lf.filePath))
-            logFilesDictionary.Remove(lf.filePath);
+            if (logFilesDictionary.ContainsKey(lf.filePath))
+                logFilesDictionary.Remove(lf.filePath);
 
-            if(logsDictionary.ContainsKey(lf.filePath))
-            logsDictionary.Remove(lf.filePath);
+            if (logsDictionary.ContainsKey(lf.filePath))
+                logsDictionary.Remove(lf.filePath);
 
             try
             {
@@ -1201,7 +1213,7 @@ namespace GW2RaidarUploader
                 Config.Save();
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 AddMessage("Failed to delete file " + lf.filePath + " due to " + ex);
             }
@@ -1211,6 +1223,6 @@ namespace GW2RaidarUploader
         #endregion
 
 
-       
+
     }
 }
