@@ -22,3 +22,13 @@ SETUP
 #### Hit Upload Sync and check the box for Notify On Systray to have the program hide on Systray and notify from there.
 
 [![GW2RaidarUploader](https://img.youtube.com/vi/k9JD-dGMeE8&/0.jpg)](https://www.youtube.com/watch?v=k9JD-dGMeE8&)
+
+SCREENSHOTS
+---
+![Auto Sync Tab](https://raw.githubusercontent.com/CoffeeBns/GW2RaidarUploader/master/Screenshots/AutoSync.png)
+---
+![Log Context Menu](https://raw.githubusercontent.com/CoffeeBns/GW2RaidarUploader/master/Screenshots/LogContextMenu.png)
+---
+![Log Management Tab](https://raw.githubusercontent.com/CoffeeBns/GW2RaidarUploader/master/Screenshots/LogManagementScreen.png)
+---
+![Log Options](https://raw.githubusercontent.com/CoffeeBns/GW2RaidarUploader/master/Screenshots/OptionsMenu.png)
