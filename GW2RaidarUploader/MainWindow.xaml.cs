@@ -381,6 +381,8 @@ namespace GW2RaidarUploader
 
             }
 
+            AddMessage("Logfilescollection size is " + logFilesCollection.Count);
+
             LogFileListPanel.SetObservableCollection(logFilesCollection);
         }
 
