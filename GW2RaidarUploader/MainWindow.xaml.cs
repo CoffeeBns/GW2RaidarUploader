@@ -513,7 +513,7 @@ namespace GW2RaidarUploader
             try
             {
 
-                List<string> filesToUpload = GetFilesToUpload();
+                List<string> filesToUpload = GetFilesToUpload(overrideLastEncounterSyncTime);
 
                 if (filesToUpload == null)
                 {
@@ -625,13 +625,15 @@ namespace GW2RaidarUploader
                     {
                         LogFile lf = potentialLogFiles[i];
 
-                        bool eligibleForUpload = true;
+                        bool eligibleForUpload = false;
 
-                        if (lf.uploadStatus == LogUploadStatus.Uploaded)
-                            eligibleForUpload = false;
-
-                        if ((DateTime.Now > lf.creationDate.AddMinutes(20) || overrideLastEncounterSyncTime) && eligibleForUpload)
+                        if (DateTime.Now > lf.creationDate.AddMinutes(20) || overrideLastEncounterSyncTime)
                         {
+                            eligibleForUpload = true;
+
+                            if (lf.uploadStatus == LogUploadStatus.Uploaded)
+                                eligibleForUpload = false;
+
                             var futureEncounters = potentialLogFiles.Where(d => d.encounter == lf.encounter && Math.Abs(ClientOperator.FastFloor((float)(d.creationDate - lf.creationDate).TotalHours)) < 6);
 
                             if (devModeEnabled)
@@ -644,6 +646,7 @@ namespace GW2RaidarUploader
                                 {
                                     if (devModeEnabled)
                                         AddMessage(lf.encounter + " at " + lf.creationDate + " skipped due to " + otherLF.encounter + " at " + otherLF.creationDate);
+
                                     eligibleForUpload = false;
                                     break;
                                 }
@@ -661,14 +664,15 @@ namespace GW2RaidarUploader
 
                     AddMessage("Out of " + potentialLogFiles.Count + " logs, " + filesToUpload.Count + " will be uploaded.");
 
+                    Config.Instance.logsDictionary = logsDictionary;
+                    Config.Instance.logFilesDictionary = logFilesDictionary;
+                    Config.Save();
+
                     return (filesToUpload.Count > 0 ? filesToUpload : null);
                 }
 
-                Config.Instance.logsDictionary = logsDictionary;
-                Config.Instance.logFilesDictionary = logFilesDictionary;
-                Config.Save();
 
-                AddMessage("All log files synced locally in " + (DateTime.Now - syncStarted).TotalSeconds + " seconds.");
+                //AddMessage("All log files synced locally in " + (DateTime.Now - syncStarted).TotalSeconds + " seconds.");
 
             }
             catch (Exception ex)
