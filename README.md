@@ -1,7 +1,7 @@
 # GW2RaidarUploader
 GW2RaidarUploader is a tool for automatically updating logs to GW2Raidar.com
 
-## [Download the full Release Here](https://github.com/CoffeeBns/GW2RaidarUploader/releases)
+## [Download the Full Release Here](https://github.com/CoffeeBns/GW2RaidarUploader/releases)
 
 REQUIREMENTS
 ---
