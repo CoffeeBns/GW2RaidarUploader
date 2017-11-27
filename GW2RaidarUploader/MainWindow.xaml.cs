@@ -381,8 +381,6 @@ namespace GW2RaidarUploader
 
             }
 
-            AddMessage("Logfilescollection size is " + logFilesCollection.Count);
-
             LogFileListPanel.SetObservableCollection(logFilesCollection);
         }
 
@@ -519,16 +517,18 @@ namespace GW2RaidarUploader
                 {
                     AddMessage("Failed to find any files to upload at this time.");
 
-                    this.Dispatcher.Invoke((Action)(() =>
+                    if (Config.Instance.autoSyncEnabled)
                     {
-                        UploadButton.IsEnabled = false;
-                        StopUploadButton.IsEnabled = true;
-                        ProgressBarControl.Maximum = 1;
-                        ProgressBarControl.Value = 0;
-                        Config.Instance.autoSyncEnabled = true;
-                        Config.Save();
+                        this.Dispatcher.Invoke((Action)(() =>
+                        {
+                            UploadButton.IsEnabled = false;
+                            StopUploadButton.IsEnabled = true;
+                            ProgressBarControl.Maximum = 1;
+                            ProgressBarControl.Value = 0;
+                            Config.Save();
 
-                    }));
+                        }));
+                    }
 
                     return;
                 }
@@ -690,16 +690,18 @@ namespace GW2RaidarUploader
 
             DateTime syncStarted = DateTime.Now;
 
-            this.Dispatcher.Invoke((Action)(() =>
+            if (Config.Instance.autoSyncEnabled)
             {
-                UploadButton.IsEnabled = false;
-                StopUploadButton.IsEnabled = true;
-                ProgressBarControl.Maximum = filesToUpload.Count;
-                ProgressBarControl.Value = 0;
-                Config.Instance.autoSyncEnabled = true;
-                Config.Save();
+                this.Dispatcher.Invoke((Action)(() =>
+                {
+                    UploadButton.IsEnabled = false;
+                    StopUploadButton.IsEnabled = true;
+                    ProgressBarControl.Maximum = filesToUpload.Count;
+                    ProgressBarControl.Value = 0;
+                    Config.Save();
 
-            }));
+                }));
+            }
 
             totalFilesToUpload = filesToUpload.Count;
 
