@@ -1,7 +1,6 @@
 <Controls:MetroWindow x:Class="GW2RaidarUploader.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:GW2RaidarUploader="clr-namespace:GW2RaidarUploader"
         xmlns:System="clr-namespace:System;assembly=mscorlib"
         xmlns:gw2Windows="clr-namespace:GW2RaidarUploader.Windows"

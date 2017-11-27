@@ -46,7 +46,7 @@ namespace GW2RaidarUploader
         Dictionary<string, int> logsDictionary = new Dictionary<string, int>();
         Dictionary<string, LogFile> logFilesDictionary = new Dictionary<string, LogFile>();
 
-        ObservableCollection<LogFile> logFilesCollection;
+        ObservableCollection<LogFile> logFilesCollection = new ObservableCollection<LogFile>();
 
         bool loaded = false;
 
@@ -278,6 +278,7 @@ namespace GW2RaidarUploader
             EnableDevFunctions();
 
             LocalSyncButton_Click(this, null);
+
             LoadLogsList();
             loaded = true;
         }
@@ -324,6 +325,12 @@ namespace GW2RaidarUploader
                 dateToUploadFrom = c.dateToUploadFrom;
                 logFilesDictionary = c.logFilesDictionary;
                 logsDictionary = c.logsDictionary;
+
+                if (logFilesDictionary == null)
+                    logFilesDictionary = new Dictionary<string, LogFile>();
+
+                if (logsDictionary == null)
+                    logsDictionary = new Dictionary<string, int>();
 
                 //if (dateToUploadFrom == DateTime.MinValue)
                 // dateToUploadFrom = DateTime.Now;
@@ -374,14 +381,17 @@ namespace GW2RaidarUploader
 
         public void LoadLogsList()
         {
-            if (logFilesDictionary.Count > 0)
+            try
             {
-                logFilesCollection = new ObservableCollection<LogFile>(logFilesDictionary.Values);
+                if (logFilesDictionary.Count > 0)
+                {
+                    logFilesCollection = new ObservableCollection<LogFile>(logFilesDictionary.Values);
 
+                    LogFileListPanel.SetObservableCollection(logFilesCollection);
 
+                }
             }
-
-            LogFileListPanel.SetObservableCollection(logFilesCollection);
+            catch { }
         }
 
         private void UploadButton_Click(object sender, RoutedEventArgs e)
@@ -1051,6 +1061,7 @@ namespace GW2RaidarUploader
             if (MainTabControl.SelectedItem != selectedTabItem && Config.Instance.randomizedBackgrounds)
             {
                 Randomize_Wallpaper();
+                LoadLogsList();
 
             }
             else
