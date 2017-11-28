@@ -126,6 +126,8 @@ namespace GW2RaidarUploader
 
                     if (File.Exists(@"Images/Icons/" + iconName))
                     {
+                       
+
                         drawingGroup.Children.Add(new ImageDrawing(new BitmapImage(new Uri(@"Images/Icons/" + iconName, UriKind.Relative)),
                                                                    new Rect(0, 0, 25, 25)));
 
@@ -133,10 +135,33 @@ namespace GW2RaidarUploader
                     }
                     else
                     {
-                        iconName = "Choya_Pinata.png";
-                        drawingGroup.Children.Add(new ImageDrawing(new BitmapImage(new Uri(@"Images/Icons/" + iconName, UriKind.Relative)),
-                                                                   new Rect(0, 0, 25, 25)));
+                       var newEncounter = ClientOperator.mainWindow.RaidEncountersDEtoEN[encounter];
+
+                        iconName = newEncounter.Replace(" ", "_") + ".png";
+
+                        if (iconName.Contains("Kitty_Golem"))
+                            iconName = "Kitty_Golem.png";
+
+                        if (File.Exists(@"Images/Icons/" + iconName))
+                        {
+
+
+                            drawingGroup.Children.Add(new ImageDrawing(new BitmapImage(new Uri(@"Images/Icons/" + iconName, UriKind.Relative)),
+                                                                       new Rect(0, 0, 25, 25)));
+
+
+                        }
+                        else
+                        {
+                                iconName = "Choya_Pinata.png";
+                                drawingGroup.Children.Add(new ImageDrawing(new BitmapImage(new Uri(@"Images/Icons/" + iconName, UriKind.Relative)),
+                                    new Rect(0, 0, 25, 25)));
+
+                        }
+
                     }
+                    
+                    
             
                     var brush = new ImageBrush { ImageSource = new DrawingImage(drawingGroup) };
 
