@@ -27,6 +27,8 @@ SCREENSHOTS
 ---
 ![Auto Sync Tab](https://raw.githubusercontent.com/CoffeeBns/GW2RaidarUploader/master/Screenshots/AutoSync.png)
 ---
+![DPS.REPORT Uploading](https://raw.githubusercontent.com/CoffeeBns/GW2RaidarUploader/master/Screenshots/GW2DPSReport.png)
+---
 ![Log Context Menu](https://raw.githubusercontent.com/CoffeeBns/GW2RaidarUploader/master/Screenshots/LogContextMenu.png)
 ---
 ![Log Management Tab](https://raw.githubusercontent.com/CoffeeBns/GW2RaidarUploader/master/Screenshots/LogManagementScreen.png)
