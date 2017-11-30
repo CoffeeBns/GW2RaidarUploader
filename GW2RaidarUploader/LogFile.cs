@@ -131,65 +131,85 @@ namespace GW2RaidarUploader
                 if (_cachedIcon != null)
                     return _cachedIcon;
 
-                try
-                {
+                 try
+                 {
+
+                if (encounter == null)
+                    encounter = "UNKNOWN";
            
-                    var iconName = encounter.Replace(" ", "_") + ".png";
+                    var iconName = "" + encounter.Replace(" ", "_") + ".png";
 
                     if (iconName.Contains("Kitty_Golem"))
                         iconName = "Kitty_Golem.png";
 
 
+
                     var drawingGroup = new DrawingGroup();
 
-                    if (File.Exists(@"Images/Icons/" + iconName))
+                    if (iconName.Length < 3)
+                        iconName = "notfound.png";
+
+
+                    if (File.Exists("Images/Icons/" + iconName))
                     {
                        
-
-                        drawingGroup.Children.Add(new ImageDrawing(new BitmapImage(new Uri(@"Images/Icons/" + iconName, UriKind.Relative)),
+                        drawingGroup.Children.Add(new ImageDrawing(new BitmapImage(new Uri("Images/Icons/" + iconName, UriKind.Relative)),
                                                                    new Rect(0, 0, 25, 25)));
 
 
                     }
                     else
                     {
-                       var newEncounter = ClientOperator.mainWindow.RaidEncountersDEtoEN[encounter];
+                    var newEncounter = "";
 
-                        iconName = newEncounter.Replace(" ", "_") + ".png";
+                    if(ClientOperator.mainWindow.RaidEncountersDEtoEN.ContainsKey(encounter))
+                    newEncounter += ClientOperator.mainWindow.RaidEncountersDEtoEN[encounter];
+
+                        iconName = "" + newEncounter.Replace(" ", "_") + ".png";
 
                         if (iconName.Contains("Kitty_Golem"))
                             iconName = "Kitty_Golem.png";
 
-                        if (File.Exists(@"Images/Icons/" + iconName))
+                        if(iconName.Length < 3)
+                            iconName = "Choya_Pinata.png";
+
+                        if (File.Exists("Images/Icons/" + iconName))
                         {
 
 
-                            drawingGroup.Children.Add(new ImageDrawing(new BitmapImage(new Uri(@"Images/Icons/" + iconName, UriKind.Relative)),
+                            drawingGroup.Children.Add(new ImageDrawing(new BitmapImage(new Uri("Images/Icons/" + iconName, UriKind.Relative)),
                                                                        new Rect(0, 0, 25, 25)));
-
 
                         }
                         else
                         {
                                 iconName = "Choya_Pinata.png";
-                                drawingGroup.Children.Add(new ImageDrawing(new BitmapImage(new Uri(@"Images/Icons/" + iconName, UriKind.Relative)),
+                                drawingGroup.Children.Add(new ImageDrawing(new BitmapImage(new Uri("Images/Icons/" + iconName, UriKind.Relative)),
                                     new Rect(0, 0, 25, 25)));
 
                         }
 
                     }
-                    
-                    
+
+                 
             
                     var brush = new ImageBrush { ImageSource = new DrawingImage(drawingGroup) };
 
                     _cachedIcon = brush;
 
                     return brush;
-                }
-                catch (Exception)
-                {
-                    return new ImageBrush();
+                 }
+                 catch
+                 {
+
+                    var drawingGroup = new DrawingGroup();
+
+                    drawingGroup.Children.Add(new ImageDrawing(new BitmapImage(new Uri("Images/Icons/Choya_Pinata.png", UriKind.Relative)),
+                                    new Rect(0, 0, 25, 25)));
+
+                    var brush = new ImageBrush { ImageSource = new DrawingImage(drawingGroup) };
+
+                    return brush;
                 }
             }
         }

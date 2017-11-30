@@ -90,7 +90,12 @@ namespace GW2RaidarUploader
             "Vital Kitty Golem",
             "Xera",
             "Xera (Post-Half)",
-            "Zane"
+            "Zane",
+            "Soulless Horror",
+            "Dhuum",
+            "Voice in the Void",
+            "The Ferrywoman"
+
         };
 
         public List<string> RaidEncountersDE = new List<string>()
@@ -578,7 +583,7 @@ namespace GW2RaidarUploader
                 {
                     AddMessage("Failed to find any files to upload at this time.");
 
-                    if (Config.Instance.autoSyncEnabled)
+                    if (Config.Instance.autoSyncEnabled && loaded)
                     {
                         this.Dispatcher.Invoke((Action)(() =>
                         {
@@ -664,11 +669,8 @@ namespace GW2RaidarUploader
                     {
                         if (creationDate >= dateToUploadFrom)
                         {
-
-                            if (logFilesDictionary[allFiles[i]].uploadStatus != LogUploadStatus.Uploaded || (logFilesDictionary[allFiles[i]].dpsReportURL == null && Config.Instance.uploadToDPSReport))
-                            {
-                                filesToUpload.Add(allFiles[i]);
-                            }
+                            filesToUpload.Add(allFiles[i]);
+                          
                         }
                     }
                     else
@@ -755,6 +757,7 @@ namespace GW2RaidarUploader
 
         public void UploadAllFiles(List<string> filesToUpload)
         {
+            _completedUploads = 0;
             AddMessage("Uploading all files from " + dateToUploadFrom.ToString() + " forward.");
 
             DateTime syncStarted = DateTime.Now;
@@ -837,6 +840,8 @@ namespace GW2RaidarUploader
         {
             AddMessage("Uploading to dps.report.");
 
+            _completedUploads = 0;
+
             DateTime syncStarted = DateTime.Now;
 
             if (Config.Instance.autoSyncEnabled)
@@ -860,7 +865,6 @@ namespace GW2RaidarUploader
 
                 if (uploaded != null)
                 {
-
                     logFilesDictionary[filesToUpload[i]].dpsReportURL = uploaded;
                 }
                 else
@@ -977,6 +981,8 @@ namespace GW2RaidarUploader
                 var urlHttp = url.Substring(url.LastIndexOf("https:"), url.Length - url.LastIndexOf("https:"));
             
                 var finalURL = urlHttp.Replace(@"</a>", "");
+
+                AddMessage(finalURL);
 
                 return finalURL;
             }
