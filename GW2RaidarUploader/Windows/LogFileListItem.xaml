@@ -5,19 +5,21 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GW2RaidarUploader"
              mc:Ignorable="d" 
-             d:DesignHeight="400" d:DesignWidth="600" Height="25" MinWidth="600" ContextMenuOpening="UserControl_ContextMenuOpening" MouseRightButtonDown="UserControl_MouseRightButtonDown" >
+             d:DesignHeight="400" d:DesignWidth="600" Height="25" MinWidth="550" ContextMenuOpening="UserControl_ContextMenuOpening" MouseRightButtonDown="UserControl_MouseRightButtonDown" >
     <UserControl.ContextMenu>
         <ContextMenu>
             <MenuItem x:Name="BtnSelectAll" Header="SELECT ALL" Click="BtnSelectAll_Click" Style="{DynamicResource FilterMenuItemStyle}" />
             <MenuItem x:Name="BtnUpload" Header="UPLOAD SELECTED" Click="BtnUpload_Click" Style="{DynamicResource FilterMenuItemStyle}" />
             <MenuItem x:Name="BtnUnselectAll" Header="UNSELECT ALL" Click="BtnUnselectAll_Click" Style="{DynamicResource FilterMenuItemStyle}" />
             <MenuItem x:Name="BtnDelete" Header="DELETE SELECTED" Click="BtnDelete_Click" Style="{DynamicResource FilterMenuItemStyle}"/>
+            <MenuItem x:Name="BtnDPSReport" Header="UPLOAD TO DPS.REPORT" Click="BtnDPSReport_Click" Style="{DynamicResource FilterMenuItemStyle}"/>
         </ContextMenu>
     </UserControl.ContextMenu>
-    <Grid Height="25" MinWidth="600">
+    <Grid Height="25" MinWidth="520">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="180"/>
             <ColumnDefinition Width="120"/>
+            <ColumnDefinition Width="100"/>
             <ColumnDefinition Width="100"/>
             <ColumnDefinition Width="auto"/>
         </Grid.ColumnDefinitions>
@@ -38,9 +40,17 @@
         <TextBlock x:Name="tagTB" Visibility="Collapsed" Width="auto" VerticalAlignment="Center" HorizontalAlignment="Left"
                                  Text="{Binding tag}"                     
                                  TextAlignment="Right" FontSize="{Binding FontSize}" FontStyle="Normal" Grid.Column="3" Panel.ZIndex="5" FontFamily="Verdana" />
-        <TextBlock x:Name="filePathTB" Margin="5,0,0,0" Width="auto" VerticalAlignment="Center" HorizontalAlignment="Right"
+        <Button x:Name="DpsReportLinkButton" Content="DPS.REPORT" Visibility="{Binding DPSReportVisibility}" Grid.Column="3" HorizontalAlignment="Center"  VerticalAlignment="Center" Height="23" Width="90" FontWeight="Bold" BorderBrush="#FF5D00FF" Foreground="#FFEEEEEE"  FontSize="9" Click="DpsReportLinkButton_Click" Margin="0,1" MinHeight="23" Padding="5,4,5,5" VerticalContentAlignment="Center">
+            <Button.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FF6213A4" Offset="0"/>
+                    <GradientStop Color="#FF000F40" Offset="1"/>
+                </LinearGradientBrush>
+            </Button.Background>
+        </Button>
+        <TextBlock x:Name="filePathTB" Visibility="Hidden" Margin="5,0,0,0" Width="auto" VerticalAlignment="Center" HorizontalAlignment="Right"
                                  Text="{Binding FileName}"                     
-                                 TextAlignment="Right" FontSize="{Binding FontSize}" FontStyle="Normal" Grid.Column="3" Panel.ZIndex="5" FontFamily="Verdana" />
+                                 TextAlignment="Right" FontSize="{Binding FontSize}" FontStyle="Normal" Grid.Column="4" Panel.ZIndex="5" FontFamily="Verdana" />
 
 
 

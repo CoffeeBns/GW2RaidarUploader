@@ -29,6 +29,8 @@ namespace GW2RaidarUploader
         public string uploadResponse { get; set; }
         [ProtoMember(6)]
         public string tag { get; set; }
+        [ProtoMember(7)]
+        public string dpsReportURL { get; set; }
 
         int _fontSize = 11;
 
@@ -39,7 +41,10 @@ namespace GW2RaidarUploader
             this.filePath = filePath;
             this.creationDate = creationDate;
             this.encounter = encounter;
-            this.uploadStatus = uploadStatus;       
+            this.uploadStatus = uploadStatus;
+            uploadResponse = "";
+            tag = "";
+            dpsReportURL = null;
         }
 
 
@@ -51,6 +56,7 @@ namespace GW2RaidarUploader
             uploadStatus = MainWindow.LogUploadStatus.NotUploaded;
             uploadResponse = "";
             tag = "";
+            dpsReportURL = null;
 
             }
 
@@ -104,7 +110,19 @@ namespace GW2RaidarUploader
             }
         }
 
-        
+        public Visibility DPSReportVisibility
+        {
+            get
+            {
+                if (dpsReportURL != null)
+                    return Visibility.Visible;
+                else
+                    return Visibility.Hidden;
+
+            }
+
+        }
+
 
         public ImageBrush Icon
         {

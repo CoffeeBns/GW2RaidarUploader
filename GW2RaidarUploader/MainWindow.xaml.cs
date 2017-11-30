@@ -320,7 +320,6 @@ namespace GW2RaidarUploader
                 UploadButton_Click(this, null);
             }
 
-            
 
             EnableDevFunctions();
 
@@ -329,7 +328,7 @@ namespace GW2RaidarUploader
             LoadLogsList();
             loaded = true;
 
-            ListAllLogFilePaths();
+            //ListAllLogFilePaths();
         }
 
         private void EnableDevFunctions()
@@ -384,6 +383,8 @@ namespace GW2RaidarUploader
                 if (dateToUploadFrom == DateTime.MinValue)
                     dateToUploadFrom = DateTime.Now;
 
+                
+
                 syncRate = c.syncRate;
 
                 if (!Directory.Exists(raidarLogsPath))
@@ -398,6 +399,7 @@ namespace GW2RaidarUploader
                     NotificationSoundsCB.IsChecked = (c.notificationSounds ? true : false);
                     MinimizeToSystrayCB.IsChecked = (c.minimizeToSystray ? true : false);
                     RandomizeBackgroundsCB.IsChecked = (c.randomizedBackgrounds ? true : false);
+                    UploadToDPSReportCB.IsChecked = (c.uploadToDPSReport ? true : false);
                 }));
 
             }
@@ -663,7 +665,7 @@ namespace GW2RaidarUploader
                         if (creationDate >= dateToUploadFrom)
                         {
 
-                            if (logFilesDictionary[allFiles[i]].uploadStatus != LogUploadStatus.Uploaded)
+                            if (logFilesDictionary[allFiles[i]].uploadStatus != LogUploadStatus.Uploaded || (logFilesDictionary[allFiles[i]].dpsReportURL == null && Config.Instance.uploadToDPSReport))
                             {
                                 filesToUpload.Add(allFiles[i]);
                             }
@@ -700,10 +702,7 @@ namespace GW2RaidarUploader
                         if (DateTime.Now > lf.creationDate.AddMinutes(20) || overrideLastEncounterSyncTime)
                         {
                             eligibleForUpload = true;
-
-                            if (lf.uploadStatus == LogUploadStatus.Uploaded)
-                                eligibleForUpload = false;
-
+                 
                             var futureEncounters = potentialLogFiles.Where(d => d.encounter == lf.encounter && Math.Abs(ClientOperator.FastFloor((float)(d.creationDate - lf.creationDate).TotalHours)) < 6);
 
                             if(devModeEnabled)
@@ -811,6 +810,11 @@ namespace GW2RaidarUploader
                 }));
             }
 
+            if (Config.Instance.uploadToDPSReport)
+            {
+                BeginUploadAllFilesToDPS(filesToUpload);
+            }
+
             Config.Instance.logFilesDictionary = logFilesDictionary;
             Config.Instance.logsDictionary = logsDictionary;
             Config.Save();
@@ -819,11 +823,90 @@ namespace GW2RaidarUploader
             CompletionMessage();
         }
 
+        public void BeginUploadAllFilesToDPS(List<string> filesToUpload)
+        {
+            ThreadStart threadStart = delegate
+            {
+                UploadAllFilesToDPS(filesToUpload);
+            };
+
+            new Thread(threadStart).Start();
+        }
+
+        public void UploadAllFilesToDPS(List<string> filesToUpload)
+        {
+            AddMessage("Uploading to dps.report.");
+
+            DateTime syncStarted = DateTime.Now;
+
+            if (Config.Instance.autoSyncEnabled)
+            {
+                this.Dispatcher.Invoke((Action)(() =>
+                {
+                    UploadButton.IsEnabled = false;
+                    StopUploadButton.IsEnabled = true;
+                    ProgressBarControl.Maximum = filesToUpload.Count;
+                    ProgressBarControl.Value = 0;
+                    Config.Save();
+
+                }));
+            }
+
+            totalFilesToUpload = filesToUpload.Count;
+
+            for (int i = 0; i < totalFilesToUpload; i++)
+            {
+                string uploaded = UploadLogFileToDPS(filesToUpload[i]);
+
+                if (uploaded != null)
+                {
+
+                    logFilesDictionary[filesToUpload[i]].dpsReportURL = uploaded;
+                }
+                else
+                {
+
+                    AddMessage("Syncing cancelled due to failed upload to dps.report.");
+                    doneUploading = true;
+
+                    Config.Instance.logFilesDictionary = logFilesDictionary;
+                    Config.Save();
+
+                    return;
+                }
+
+                this.Dispatcher.Invoke((Action)(() =>
+                {
+                    _completedUploads += 1;
+                    ProgressBarControl.Value = _completedUploads;
+                    if (totalFilesToUpload > 0)
+                    {
+                        ClientOperator.mainWindow.AddMessage("Completed " + _completedUploads + "/" + totalFilesToUpload + " uploads.");
+
+                        if (_completedUploads == totalFilesToUpload)
+                            CompletionMessage();
+                    }
+                }));
+            }
+
+            Config.Instance.logFilesDictionary = logFilesDictionary;
+            Config.Instance.logsDictionary = logsDictionary;
+            Config.Save();
+
+            LoadLogsList();
+        }
+
         private bool UploadLogFile(string file)
         {
 
             try
             {
+
+                LogFile lf = logFilesDictionary[file];
+
+                if (lf.uploadStatus == LogUploadStatus.Uploaded)
+                    return true;
+            
                 var client = new RestClient(@"https://www.gw2raidar.com");
 
 
@@ -858,6 +941,51 @@ namespace GW2RaidarUploader
             }
         }
 
+        private string UploadLogFileToDPS(string file)
+        {
+
+            try
+            {
+                var client = new RestClient(@"https://dps.report");
+
+                LogFile lf = logFilesDictionary[file];
+
+                if (lf.dpsReportURL != null)
+                    return lf.dpsReportURL;
+
+                RestRequest req = new RestRequest(@"/uploadContent");
+                req.AddFile("file", file);
+
+                //Comment this out to test in a way that gives false positive uploads.
+                req.Method = Method.POST;
+
+                IRestResponse response = client.Execute(req);
+
+                if (response.ResponseStatus == ResponseStatus.Completed)
+                {
+                    AddMessage("Successfully uploaded " + file);
+                    ShowNotificationMessage("Log Uploaded Successfully.", file + " has been uploaded.");
+                }
+                else
+                {
+                    AddMessage("Failed to upload " + file);
+                    return null;
+                }
+
+                string url = response.Content;
+
+                var urlHttp = url.Substring(url.LastIndexOf("https:"), url.Length - url.LastIndexOf("https:"));
+            
+                var finalURL = urlHttp.Replace(@"</a>", "");
+
+                return finalURL;
+            }
+            catch (Exception ex)
+            {
+                AddMessage("Failed to upload files due to " + ex);
+                return null;
+            }
+        }
         //Called upon upload Completion
         private void CompletionMessage()
         {
@@ -915,6 +1043,7 @@ namespace GW2RaidarUploader
                 c.notificationSounds = (NotificationSoundsCB.IsChecked == true ? true : false);
                 c.minimizeToSystray = (MinimizeToSystrayCB.IsChecked == true ? true : false);
                 c.randomizedBackgrounds = (RandomizeBackgroundsCB.IsChecked == true ? true : false);
+                c.uploadToDPSReport = (UploadToDPSReportCB.IsChecked == true ? true : false);
 
                 Config.Save();
             }
@@ -1307,6 +1436,7 @@ namespace GW2RaidarUploader
             }
 
         }
+
 
         #endregion
 

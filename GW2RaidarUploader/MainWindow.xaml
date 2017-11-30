@@ -212,7 +212,7 @@
             </TabItem>
 
             <TabItem x:Name="ViewLogsTabItem" Header="VIEW LOGS" Style="{StaticResource TestTabItem}" BorderBrush="#000075AB" Foreground="Transparent" SnapsToDevicePixels="True" >
-                <gw2Windows:LogFileList x:Name="LogFileListPanel" Height="auto" Width="auto" MinWidth ="700" Margin="5,24,0,5" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                <gw2Windows:LogFileList x:Name="LogFileListPanel" Height="auto" Width="auto" MinWidth ="600" Margin="5,24,0,5" VerticalAlignment="Top" HorizontalAlignment="Left"/>
             </TabItem>
             
             <TabItem x:Name="OptionsTabItem" Header="OPTIONS" Style="{StaticResource TestTabItem}" BorderBrush="#000075AB" Foreground="Transparent" SnapsToDevicePixels="True" >
@@ -223,11 +223,12 @@
                     </Grid.ColumnDefinitions>
 
                     <StackPanel Orientation="Vertical" Grid.Column="0" Margin="0,20,0,0">
-                        <CheckBox x:Name="MinimizeToSystrayCB" Content="MINIMIZE TO SYSTRAY" Margin="15,2,0,0" IsChecked="False" Background="{x:Null}" BorderBrush="White" ToolTip="Will notify on systray upon new upload attempt."  Foreground="#FFEEEEEE" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked"/>
+                        <CheckBox x:Name="MinimizeToSystrayCB" Content="MINIMIZE TO SYSTRAY" Margin="15,2,0,0" IsChecked="False" Background="{x:Null}" BorderBrush="White" ToolTip="Will minimize to systray"  Foreground="#FFEEEEEE" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked"/>
                         <CheckBox x:Name="NotifyOnSystrayCB" Content="NOTIFY ON SYSTRAY" Margin="15,2,0,0" IsChecked="True" Background="{x:Null}" BorderBrush="White" ToolTip="Will notify on systray upon new upload attempt."  Foreground="#FFEEEEEE" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked"/>
-                        <CheckBox x:Name="NotificationSoundsCB" Content="NOTIFICATION SOUNDS" IsChecked="True" Margin="15,2,0,0" Background="{x:Null}" BorderBrush="White" ToolTip="Will notify on systray upon new upload attempt."  Foreground="#FFEEEEEE" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked"/>
+                        <CheckBox x:Name="NotificationSoundsCB" Content="NOTIFICATION SOUNDS" IsChecked="True" Margin="15,2,0,0" Background="{x:Null}" BorderBrush="White" ToolTip="Have notification sounds."  Foreground="#FFEEEEEE" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked"/>
                         <CheckBox x:Name="OnlyLastEncounterCB" Content="ONLY UPLOAD LAST ENCOUNTER" IsChecked="True" Margin="15,2,0,0" Background="{x:Null}" BorderBrush="White" ToolTip="Will notify on systray upon new upload attempt."  Foreground="#FFEEEEEE" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked"/>
                         <CheckBox x:Name="RandomizeBackgroundsCB" Content="RANDOMIZE BACKGROUNDS" IsChecked="True" Margin="15,2,0,0" Background="{x:Null}" BorderBrush="White" ToolTip="Will notify on systray upon new upload attempt."  Foreground="#FFEEEEEE" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked"/>
+                        <CheckBox x:Name="UploadToDPSReportCB" Content="UPLOAD TO DPS.REPORT" IsChecked="True" Margin="15,2,0,0" Background="{x:Null}" BorderBrush="White" ToolTip="Will notify on systray upon new upload attempt."  Foreground="#FFEEEEEE" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked"/>
 
                     </StackPanel>
 

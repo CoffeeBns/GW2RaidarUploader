@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -85,6 +86,21 @@ namespace GW2RaidarUploader.Windows
                 ContextMenu.IsOpen = true;
            
             e.Handled = true;
+        }
+
+        private void BtnDPSReport_Click(object sender, RoutedEventArgs e)
+        {
+            if (ClientOperator.logFileList != null)
+            {
+                ClientOperator.logFileList.UploadSelectedToDPSButton_Click(this, null);
+            }
+        }
+
+        private void DpsReportLinkButton_Click(object sender, RoutedEventArgs e)
+        {
+            LogFile lf = DataContext as LogFile;
+
+            Process.Start(lf.dpsReportURL);
         }
     }
 }

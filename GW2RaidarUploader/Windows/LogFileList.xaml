@@ -15,13 +15,13 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="600"></ColumnDefinition>
+            <ColumnDefinition Width="520"></ColumnDefinition>
             <ColumnDefinition Width="200*"/>
         </Grid.ColumnDefinitions>
 
         <DockPanel DockPanel.Dock="Top" Grid.Column="0" Grid.ColumnSpan="2" MinWidth="580" Width="auto" Height="auto">
-            <Grid HorizontalAlignment="Left" MinWidth="590" Width="auto" Height="auto"  Background="{StaticResource MainBackgroundColor}">
-                <Menu Background="{x:Null}" HorizontalAlignment="Left" Height="30" Width="600" Grid.Column="0" BorderBrush="#FF00FBED" BorderThickness="1">
+            <Grid HorizontalAlignment="Left" MinWidth="520" Width="auto" Height="auto"  Background="{StaticResource MainBackgroundColor}">
+                <Menu Background="{x:Null}" HorizontalAlignment="Left" Height="30" Width="520" Grid.Column="0" BorderBrush="#FF00FBED" BorderThickness="1">
                     <MenuItem x:Name="EncounterSortButton" ToolTip="Encounter Name" Grid.Row="0" Width="180" HorizontalAlignment="Left" Margin="0,0,0,0" Visibility="Visible" Click="EncounterSortButton_Click">
                         <MenuItem.Header>
                             <TextBlock VerticalAlignment="Center" Margin="-10,0,0,0" Text="ENCOUNTER" />
@@ -70,7 +70,7 @@
                             </Rectangle>
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem x:Name="FileNameSortButton" ToolTip="File Name" Width="auto" HorizontalAlignment="Left" Margin="0,0,0,0" Visibility="Visible" Click="FileNameSortButton_Click">
+                    <MenuItem x:Name="FileNameSortButton" Visibility="Hidden" ToolTip="File Name" Width="auto" HorizontalAlignment="Left" Margin="0,0,0,0" Click="FileNameSortButton_Click">
                         <MenuItem.Header>
                             <TextBlock VerticalAlignment="Center" Margin="-10,0,0,0" Text="FILE NAME" />
                         </MenuItem.Header>
@@ -88,10 +88,10 @@
 
         </DockPanel>
         <ListView Name="ListViewLogFiles" Grid.Row="1" Grid.Column="0" Background="{StaticResource MainBackgroundColor}"
-               ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True" SelectionMode="Multiple" BorderThickness="1,0,1,1" Margin="0,0,0,0"  ItemContainerStyle="{DynamicResource ListViewItemStyleLogFiles}" MinWidth="590" Width="auto" Height="auto" MinHeight="300" Style="{DynamicResource ListViewTournamentStyle}" ClipToBounds="True">
+               ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True" SelectionMode="Multiple" BorderThickness="1,0,1,1" Margin="0"  ItemContainerStyle="{DynamicResource ListViewItemStyleLogFiles}" MinWidth="520" Width="auto" Height="auto" MinHeight="300" Style="{DynamicResource ListViewTournamentStyle}" ClipToBounds="True" Padding="0">
             <ListView.Resources>
                 <Style TargetType="GridViewColumnHeader">
-                    <Setter Property="Visibility" Value="Visible" />
+                    <Setter Property="Visibility" Value="Collapsed" />
                     <Setter Property="Background" Value="Transparent"/>
                     <Setter Property="BorderBrush" Value="Transparent"/>
                 </Style>

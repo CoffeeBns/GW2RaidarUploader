@@ -97,6 +97,9 @@ namespace GW2RaidarUploader
         [DefaultValue(false)]
         public bool minimizeToSystray = false;
 
+        [ProtoMember(20)]
+        [DefaultValue(true)]
+        public bool uploadToDPSReport = true;
 
         #region Config Controls
 

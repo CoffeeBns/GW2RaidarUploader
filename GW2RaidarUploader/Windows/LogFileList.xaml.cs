@@ -21,13 +21,14 @@ namespace GW2RaidarUploader.Windows
     /// <summary>
     /// Interaction logic for LogFileList.xaml
     /// </summary>
-    public partial class LogFileList
+    public partial class LogFileList : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
 
         SortPriority currentSortFilter = SortPriority.Encounter;
         bool ascending = false;
 
-        ObservableCollection<LogFile> collection;
+        ObservableCollection<LogFile> collection = new ObservableCollection<LogFile>();
 
         enum SortPriority {
             Encounter,
@@ -44,12 +45,19 @@ namespace GW2RaidarUploader.Windows
             ClientOperator.logFileList = this;
         }
 
-        public void SetObservableCollection(ObservableCollection<LogFile> collection)
+        public void SetObservableCollection(ObservableCollection<LogFile> newCollection)
         {
-            this.collection = collection;
+            collection.Clear();
+
+            for(int i = 0; i < newCollection.Count; i++)
+            {
+                collection.Add(newCollection[i]);
+            }
 
             ListViewLogFiles.ItemsSource = collection;
-          
+
+            RepeatSort(collection);
+            
         }
 
         private void EncounterSortButton_Click(object sender, RoutedEventArgs e)
@@ -75,6 +83,16 @@ namespace GW2RaidarUploader.Windows
         private void FileNameSortButton_Click(object sender, RoutedEventArgs e)
         {
             SortByFileName(collection, ascending);
+        }
+
+        public void RepeatSort(IEnumerable collection)
+        {
+            if (currentSortFilter == SortPriority.Encounter)
+                SortByEncounter(collection, !ascending);
+            else if (currentSortFilter == SortPriority.EncounterDate)
+                SortByEncounterDate(collection, !ascending);
+            else if (currentSortFilter == SortPriority.UploadStatus)
+                SortByUploadStatus(collection, !ascending);
         }
 
         public void SortByEncounter(IEnumerable collection, bool isAscending)
@@ -221,11 +239,37 @@ namespace GW2RaidarUploader.Windows
 
                     foreach(var item in selectedItems)
                     {
-                        if ((item as LogFile).uploadStatus != MainWindow.LogUploadStatus.Uploaded)
+                        LogFile lf = (item as LogFile);
+                        if (lf.uploadStatus != MainWindow.LogUploadStatus.Uploaded || (Config.Instance.uploadToDPSReport && lf.dpsReportURL == ""))
                             itemsToUpload.Add((item as LogFile).filePath);
                     }
 
                     ClientOperator.mainWindow.UploadAllFiles(itemsToUpload);
+                }
+            }
+
+        }
+
+        public void UploadSelectedToDPSButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (collection == null)
+                return;
+
+            if (ListViewLogFiles.SelectedItems.Count > 0)
+            {
+                if (ClientOperator.mainWindow.UpdateAllValues())
+                {
+                    var selectedItems = ListViewLogFiles.SelectedItems;
+
+                    List<string> itemsToUpload = new List<string>();
+
+                    foreach (var item in selectedItems)
+                    {
+                        if ((item as LogFile).uploadStatus != MainWindow.LogUploadStatus.Uploaded)
+                            itemsToUpload.Add((item as LogFile).filePath);
+                    }
+
+                    ClientOperator.mainWindow.BeginUploadAllFilesToDPS(itemsToUpload);
                 }
             }
 
