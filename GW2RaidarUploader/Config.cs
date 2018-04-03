@@ -74,8 +74,8 @@ namespace GW2RaidarUploader
         public Dictionary<string, LogFile> logFilesDictionary = new Dictionary<string, LogFile>();
 
         [ProtoMember(14)]
-        [DefaultValue(true)]
-        public bool onlyUploadFinalEncounters = true;
+        [DefaultValue(false)]
+        public bool onlyUploadFinalEncounters = false;
 
         [ProtoMember(15)]
         [DefaultValue(25)]

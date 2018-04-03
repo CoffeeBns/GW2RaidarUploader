@@ -285,6 +285,8 @@ namespace GW2RaidarUploader
 
         public MainWindow()
         {
+            KillOldProcesses();
+
             InitializeComponent();
             ClientOperator.mainWindow = this;
 
@@ -334,6 +336,21 @@ namespace GW2RaidarUploader
             loaded = true;
 
             //ListAllLogFilePaths();
+        }
+
+
+        void KillOldProcesses()
+        {
+
+            Process current = Process.GetCurrentProcess();
+            foreach (Process process in Process.GetProcessesByName(current.ProcessName))
+            {
+                if (process.Id != current.Id)
+                {
+                    process.Kill();
+                }
+            }
+
         }
 
         private void EnableDevFunctions()
@@ -405,7 +422,13 @@ namespace GW2RaidarUploader
                     MinimizeToSystrayCB.IsChecked = (c.minimizeToSystray ? true : false);
                     RandomizeBackgroundsCB.IsChecked = (c.randomizedBackgrounds ? true : false);
                     UploadToDPSReportCB.IsChecked = (c.uploadToDPSReport ? true : false);
+
+                    AddMessage("Last encounters is set to " + c.onlyUploadFinalEncounters + " onlylastencounterCB is " + OnlyLastEncounterCB.IsChecked);
+
                 }));
+
+              
+                 
 
             }
             catch (Exception ex)
@@ -549,8 +572,19 @@ namespace GW2RaidarUploader
                 else
                     c.syncRate = 5;
 
+
+                if (OnlyLastEncounterCB.IsChecked == true)
+                {
+                    c.onlyUploadFinalEncounters = true;
+                }
+                else
+                    c.onlyUploadFinalEncounters = false;
+
                 if (allValuesValid)
                 {
+                    if(devModeEnabled)
+                    AddMessage("saving config with last encounters set to " + c.onlyUploadFinalEncounters);
+
                     Config.Save();
 
                     LoadConfig();
@@ -571,8 +605,6 @@ namespace GW2RaidarUploader
                 AddMessage("Missing values required to begin upload process. Please check them.");
                 return;
             }
-
-            LoadConfig();
 
             try
             {
@@ -667,10 +699,16 @@ namespace GW2RaidarUploader
                     //If uploading all encounters within date range, regardless of if it was the kill and/or last attempt on the boss.
                     if (!Config.Instance.onlyUploadFinalEncounters)
                     {
+                        
+                        if(devModeEnabled)
+                        AddMessage("creation date is " + creationDate + " dateToUploadFrom is " + dateToUploadFrom);
+
                         if (creationDate >= dateToUploadFrom)
                         {
                             filesToUpload.Add(allFiles[i]);
-                          
+
+                            if (devModeEnabled)
+                                AddMessage("filesToUploadCount is " + filesToUpload.Count);
                         }
                     }
                     else
@@ -734,15 +772,15 @@ namespace GW2RaidarUploader
                     }
 
                     AddMessage("Out of " + potentialLogFiles.Count + " logs, " + filesToUpload.Count + " will be uploaded.");
-
-                    Config.Instance.logsDictionary = logsDictionary;
-                    Config.Instance.logFilesDictionary = logFilesDictionary;
-                    Config.Save();
-
-                    return (filesToUpload.Count > 0 ? filesToUpload : null);
+      
                 }
 
-             
+                Config.Instance.logsDictionary = logsDictionary;
+                Config.Instance.logFilesDictionary = logFilesDictionary;
+                Config.Save();
+
+                return (filesToUpload.Count > 0 ? filesToUpload : null);
+
                 //AddMessage("All log files synced locally in " + (DateTime.Now - syncStarted).TotalSeconds + " seconds.");
 
             }
@@ -752,7 +790,7 @@ namespace GW2RaidarUploader
                 return null;
             }
 
-            return null;
+           
         }
 
         public void UploadAllFiles(List<string> filesToUpload)
@@ -1050,7 +1088,7 @@ namespace GW2RaidarUploader
                 c.minimizeToSystray = (MinimizeToSystrayCB.IsChecked == true ? true : false);
                 c.randomizedBackgrounds = (RandomizeBackgroundsCB.IsChecked == true ? true : false);
                 c.uploadToDPSReport = (UploadToDPSReportCB.IsChecked == true ? true : false);
-
+                AddMessage("Options have been saved. Saving Only Final Encounters? " + c.onlyUploadFinalEncounters);
                 Config.Save();
             }
         }
@@ -1136,7 +1174,7 @@ namespace GW2RaidarUploader
 
         private void MinimizeButton_Click(object sender, RoutedEventArgs e)
         {
-            if (Config.Instance.notifyOnSystray)
+            if (Config.Instance.minimizeToSystray)
                 MinimizeToTray();
             else
                 WindowState = WindowState.Minimized;
@@ -1149,7 +1187,7 @@ namespace GW2RaidarUploader
 
         private void MetroWindow_StateChanged(object sender, EventArgs e)
         {
-            if (Config.Instance.notifyOnSystray && WindowState == WindowState.Minimized)
+            if (Config.Instance.minimizeToSystray && WindowState == WindowState.Minimized)
                 MinimizeToTray();
         }
 
