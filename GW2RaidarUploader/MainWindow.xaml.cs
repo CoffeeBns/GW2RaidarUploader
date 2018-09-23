@@ -94,7 +94,11 @@ namespace GW2RaidarUploader
             "Soulless Horror",
             "Dhuum",
             "Voice in the Void",
-            "The Ferrywoman"
+            "The Ferrywoman",
+            "Conjured Amalgamate",
+            "Largos Twins",
+            "Qadim"
+            
 
         };
 
